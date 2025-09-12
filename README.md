@@ -35,7 +35,7 @@ cd estates-backend
 mysql -u <utilisateur> -p <nom_de_la_base> < resources/sql/script.sql
 ```
 3. Configurer les variables d’environnement
-- RenommeZ le fichier example.env en .env
+- Renommez le fichier example.env en .env
 - Remplissez la variable dans le fichier .env
 ```bash 
 DB_URL=jdbc:mysql://localhost:3306/nom_de_la_base
