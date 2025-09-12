@@ -36,11 +36,13 @@ mysql -u <utilisateur> -p <nom_de_la_base> < resources/sql/script.sql
 ```
 3. Configurer les variables d’environnement
 - Renommez le fichier example.env en .env
-- Remplissez la variable dans le fichier .env
+- Remplissez les variables dans le fichier .env
 ```bash 
 DB_URL=jdbc:mysql://localhost:3306/nom_de_la_base
 DB_USERNAME=votre_utilisateur
 DB_PASSWORD=mot_de_passe
+
+JWT_KEY=code_aléatoire_32_caractères
 
 CLOUDINARY_CLOUD_NAME=votre_cloud_name
 CLOUDINARY_API_KEY=votre_api_key
