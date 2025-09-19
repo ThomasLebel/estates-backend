@@ -58,7 +58,7 @@ L’application devrait être accessible sur http://localhost:3001 par défaut
 
 ## 📖 Documentation API (Swagger)
 Une fois l’application démarrée, vous pouvez consulter la documentation interactive des routes via Swagger :
-👉 http://localhost:8080/swagger-ui/index.html
+👉 http://localhost:3001/swagger-ui/index.html
 Cette interface permet de visualiser l’ensemble des endpoints disponibles et de les tester directement.
 
 ## 🗃️ Utilisation de Cloudinary
