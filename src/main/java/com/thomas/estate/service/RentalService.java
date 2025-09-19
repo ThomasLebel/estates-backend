@@ -38,37 +38,28 @@ public class RentalService {
 
 	public MessageResponseDto postRental(RentalRequestDto request, Authentication authentication) throws IOException {
 		String email = authentication.getName();
-		Optional<User> user = userRepository.findByEmail(email);
-		if (user.isEmpty()) {
-			throw new RuntimeException("User not found");
-		}
+		User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+		;
 		Map uploadResult = cloudinary.uploader().upload(request.getPicture().getBytes(),
 				ObjectUtils.asMap("folder", "rentals"));
 		String imageUrl = uploadResult.get("secure_url").toString();
-		Integer userID = user.get().getId();
 		Rental rentalToAdd = new Rental(request.getName(), request.getSurface(), request.getPrice(), imageUrl,
-				request.getDescription(), userID);
+				request.getDescription(), user);
 		rentalRepository.save(rentalToAdd);
 		return new MessageResponseDto("Rental Created !");
 	}
 
 	public MessageResponseDto putRental(RentalRequestDto request, Authentication authentication, Integer ID) {
 		String email = authentication.getName();
-		log.info(email);
-		Optional<User> user = userRepository.findByEmail(email);
-		if (user.isEmpty()) {
-			throw new RuntimeException("User not found");
-		}
-		Optional<Rental> optionnalRentalToUpdate = rentalRepository.findById(ID);
-		if (optionnalRentalToUpdate.isEmpty()) {
-			throw new RuntimeException("Rental not found");
-		} else if (!optionnalRentalToUpdate.get().getOwnerID().equals(user.get().getId())) {
+		User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+
+		Rental rental = rentalRepository.findById(ID).orElseThrow(() -> new RuntimeException("Rental not found"));
+
+		if (!rental.getOwner().getId().equals(user.getId())) {
 			throw new RuntimeException("Not the owner");
 		}
-		Rental rentalToUpdate = optionnalRentalToUpdate.get();
-		rentalToUpdate.updateRental(request.getName(), request.getSurface(), request.getPrice(),
-				request.getDescription());
-		rentalRepository.save(rentalToUpdate);
+		rental.updateRental(request.getName(), request.getSurface(), request.getPrice(), request.getDescription());
+		rentalRepository.save(rental);
 		return new MessageResponseDto("Rental Updated !");
 	}
 
@@ -79,8 +70,8 @@ public class RentalService {
 			LocalDate createdAt = rental.getCreatedAt().toLocalDate();
 			LocalDate updatedAt = rental.getUpdatedAt().toLocalDate();
 			RentalResponseDto rentalDto = new RentalResponseDto(rental.getId(), rental.getName(), rental.getSurface(),
-					rental.getPrice(), rental.getPicture(), rental.getDescription(), rental.getOwnerID(), createdAt,
-					updatedAt);
+					rental.getPrice(), rental.getPicture(), rental.getDescription(), rental.getOwner().getId(),
+					createdAt, updatedAt);
 			rentals.add(rentalDto);
 		}
 		return new ListRentalResponseDto(rentals);
@@ -95,6 +86,6 @@ public class RentalService {
 		LocalDate createAt = rental.getCreatedAt().toLocalDate();
 		LocalDate updatedAt = rental.getUpdatedAt().toLocalDate();
 		return new RentalResponseDto(rental.getId(), rental.getName(), rental.getSurface(), rental.getPrice(),
-				rental.getPicture(), rental.getDescription(), rental.getOwnerID(), createAt, updatedAt);
+				rental.getPicture(), rental.getDescription(), rental.getOwner().getId(), createAt, updatedAt);
 	}
 }

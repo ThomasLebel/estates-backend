@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -18,11 +20,13 @@ public class Message {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@Column(name = "rental_id")
-	private Integer rentalID;
+	@ManyToOne
+	@JoinColumn(name = "rental_id", referencedColumnName = "id")
+	private Rental rental;
 
-	@Column(name = "user_id")
-	private Integer userID;
+	@ManyToOne
+	@JoinColumn(name = "user_id", referencedColumnName = "id")
+	private User user;
 
 	private String message;
 
@@ -32,9 +36,9 @@ public class Message {
 	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
 
-	public Message(Integer rentalID, Integer userID, String message) {
-		this.rentalID = rentalID;
-		this.userID = userID;
+	public Message(Rental rental, User user, String message) {
+		this.rental = rental;
+		this.user = user;
 		this.message = message;
 		this.createdAt = LocalDateTime.now();
 		this.updatedAt = LocalDateTime.now();

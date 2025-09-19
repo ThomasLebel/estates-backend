@@ -8,6 +8,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -29,8 +31,9 @@ public class Rental {
 
 	private String description;
 
-	@Column(name = "owner_id")
-	private Integer ownerID;
+	@ManyToOne
+	@JoinColumn(name = "owner_id", referencedColumnName = "id")
+	private User owner;
 
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;
@@ -46,16 +49,16 @@ public class Rental {
 		this.updatedAt = LocalDateTime.now();
 	}
 
-	public Rental(String name, BigDecimal surface, BigDecimal price, String picture, String description,
-			Integer ownerID) {
+	public Rental(String name, BigDecimal surface, BigDecimal price, String picture, String description, User owner) {
 		this.name = name;
 		this.surface = surface;
 		this.price = price;
 		this.picture = picture;
 		this.description = description;
-		this.ownerID = ownerID;
 		this.createdAt = LocalDateTime.now();
 		this.updatedAt = LocalDateTime.now();
+		this.owner = owner;
+
 	}
 
 	public Rental() {
